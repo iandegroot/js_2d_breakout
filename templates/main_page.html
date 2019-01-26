@@ -23,6 +23,7 @@
     var dy = -2;
 
     var ballRadius = 10;
+    var ballDiameter = ballRadius * 2;
     var ballColor = "#0095DD";
 
     var paddleHeight = 10;
@@ -40,6 +41,8 @@
     var brickPadding = 10;
     var brickOffsetTop = 30;
     var brickOffsetLeft = 30;
+
+    var score = 0;
 
     var bricks = [];
     for(var col = 0; col < brickColumnCount; col++) {
@@ -88,6 +91,7 @@
         drawBricks();
         drawBall();
         drawPaddle();
+        drawScore();
         collisionDetection();
 
         if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
@@ -100,7 +104,7 @@
             if(x > paddleX && x < paddleX + paddleWidth) {
                 dy = -dy;
             }
-            else if(y + dy > canvas.height-ballRadius) {
+            else if(y + dy > canvas.height + ballDiameter) {
                 alert("GAME OVER");
                 document.location.reload();
                 clearInterval(interval); // Needed for Chrome to end game
@@ -151,11 +155,22 @@
                     if(x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
                         dy = -dy;
                         b.status = 0;
-                        ballColor = generateRandomColor();
+                        score++;
+                        if(score == brickRowCount*brickColumnCount) {
+                            alert("YOU WIN, CONGRATULATIONS!");
+                            document.location.reload();
+                            clearInterval(interval); // Needed for Chrome to end game
+                        }
                     }
                 }
             }
         }
+    }
+
+    function drawScore() {
+        ctx.font = "Bold 16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Score: " + score, 8, 20);
     }
 
     var interval = setInterval(draw, 10);
